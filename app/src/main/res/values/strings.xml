@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Assignment</string>
+    <string name="status_good">良好</string>
+    <string name="have_fun">The status is good, we want to go out to have fun</string>
 </resources>

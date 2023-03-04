@@ -1,0 +1,35 @@
+package com.example.assignment.data.api.model
+
+object MockData {
+    val recordList: List<Record> = listOf(
+        Record(sitedId = 1, siteName = "基隆", pm2_5 = 18, county = "基隆市", status = "普通"),
+        Record(sitedId = 2, siteName = "汐止", pm2_5 = 11, county = "新北市", status = "普通"),
+        Record(sitedId = 3, siteName = "萬里", pm2_5 = 19, county = "新北市", status = "普通"),
+        Record(sitedId = 4, siteName = "新店", pm2_5 = 18, county = "新北市", status = "普通"),
+        Record(sitedId = 5, siteName = "土城", pm2_5 = 8, county = "新北市", status = "良好"),
+        Record(sitedId = 6, siteName = "板橋", pm2_5 = 18, county = "新北市", status = "普通"),
+        Record(sitedId = 7, siteName = "新莊", pm2_5 = 8, county = "新北市", status = "良好"),
+        Record(sitedId = 8, siteName = "土城", pm2_5 = 20, county = "新北市", status = "普通"),
+        Record(sitedId = 9, siteName = "菜寮", pm2_5 = 15, county = "新北市", status = "普通"),
+        Record(sitedId = 10, siteName = "林口", pm2_5 = 15, county = "新北市", status = "普通"),
+        Record(sitedId = 11, siteName = "淡水", pm2_5 = 11, county = "新北市", status = "普通"),
+        Record(sitedId = 12, siteName = "士林", pm2_5 = 15, county = "臺北市", status = "良好"),
+        Record(sitedId = 13, siteName = "松山", pm2_5 = 15, county = "臺北市", status = "普通"),
+        Record(sitedId = 14, siteName = "萬華", pm2_5 = 17, county = "臺北市", status = "普通"),
+        Record(sitedId = 15, siteName = "古亭", pm2_5 = 18, county = "臺北市", status = "普通"),
+        Record(sitedId = 16, siteName = "大同", pm2_5 = 19, county = "臺北市", status = "普通"),
+        Record(sitedId = 17, siteName = "桃園", pm2_5 = 16, county = "桃園市", status = "普通"),
+        Record(sitedId = 18, siteName = "大園", pm2_5 = 19, county = "桃園市", status = "普通"),
+        Record(sitedId = 19, siteName = "觀音", pm2_5 = 8, county = "桃園市", status = "普通"),
+        Record(sitedId = 20, siteName = "平鎮", pm2_5 = 18, county = "桃園市", status = "普通"),
+        Record(sitedId = 21, siteName = "龍潭", pm2_5 = 15, county = "桃園市", status = "普通"),
+        Record(sitedId = 22, siteName = "湖口", pm2_5 = 15, county = "新竹縣", status = "普通"),
+        Record(sitedId = 23, siteName = "竹東", pm2_5 = 14, county = "新竹縣", status = "普通"),
+        Record(sitedId = 24, siteName = "新竹", pm2_5 = 17, county = "新竹市", status = "普通"),
+        Record(sitedId = 25, siteName = "頭份", pm2_5 = 10, county = "苗栗縣", status = "普通"),
+        Record(sitedId = 26, siteName = "苗栗", pm2_5 = 18, county = "苗栗縣", status = "普通"),
+        Record(sitedId = 27, siteName = "三義", pm2_5 = 18, county = "苗栗縣", status = "普通"),
+        Record(sitedId = 28, siteName = "豐原", pm2_5 = 17, county = "臺中市", status = "普通"),
+        Record(sitedId = 29, siteName = "沙鹿", pm2_5 = 12, county = "臺中市", status = "普通"),
+    )
+}
