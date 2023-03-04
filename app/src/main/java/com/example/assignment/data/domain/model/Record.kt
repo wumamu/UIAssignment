@@ -1,5 +1,10 @@
-package com.example.assignment.data.api.model
+package com.example.assignment.data.domain.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+// Domain Model
+@Parcelize
 data class Record(
     val siteName: String? = null,
     val county: String? = null,
@@ -18,10 +23,10 @@ data class Record(
     val windDirect: String? = null,
     val publishTime: String? = null,
     val co_8hr: String? = null,
-    val pm2_5Avg: String? = null,
+    val pm2_5_Avg: String? = null,
     val pm10_Avg: String? = null,
-    val so2Avg: String? = null,
+    val so2_Avg: String? = null,
     val longitude: String? = null,
     val latitude: String? = null,
     val sitedId: Int? = null,
-)
+) : Parcelable

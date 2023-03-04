@@ -1,4 +1,4 @@
-package com.example.assignment.data.api.model
+package com.example.assignment.data.domain.model
 
 object MockData {
     val recordList: List<Record> = listOf(
