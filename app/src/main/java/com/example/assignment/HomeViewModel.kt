@@ -17,6 +17,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 class HomeViewModel : ViewModel() {
 
     var records: MutableState<List<Record>> = mutableStateOf(listOf())
+    private var cacheRecords = listOf<Record>()
+    var isSearchStarting = true
+    var isSearching = mutableStateOf(false)
 
     init {
         viewModelScope.launch {
@@ -29,7 +32,34 @@ class HomeViewModel : ViewModel() {
                 val response = retrofit.getRecords(apiKey = ApiConstant.API_TOKEN)
                 val converter = RecordDtoMapper()
                 records.value = converter.toDomainList(response.records)
+                cacheRecords = records.value
             }
+        }
+    }
+
+    fun searchByRegion(query: String) {
+        val listToSearch = if(isSearchStarting) {
+            records.value
+        } else {
+            cacheRecords
+        }
+
+        viewModelScope.launch(Dispatchers.Default) {
+            if(query.isEmpty()) {
+                records.value = cacheRecords
+                isSearching.value = false
+                isSearchStarting = true
+                return@launch
+            }
+            val results = listToSearch.filter {
+                it.siteName?.contains(query.trim(), ignoreCase = true) == true
+            }
+            if(isSearchStarting) {
+                cacheRecords = records.value
+                isSearchStarting = false
+            }
+            records.value = results
+            isSearching.value = true
         }
     }
 }

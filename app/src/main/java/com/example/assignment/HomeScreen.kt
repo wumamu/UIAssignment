@@ -24,6 +24,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,9 +34,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.assignment.data.domain.model.Record
 import kotlin.math.roundToInt
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -43,48 +46,75 @@ import kotlin.math.roundToInt
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel,
+    onSearchBarClick: () -> Unit = {}
 ) {
     val recordList = viewModel.records.value
     val threshold = 10
-
     Column(modifier = Modifier.fillMaxSize()) {
-        Divider(thickness = 2.dp, color = Color.Black)
-        LazyRow(
+        SearchHeader(
             modifier = Modifier.fillMaxWidth(),
-            // content padding
-            contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 12.dp,
-                top = 8.dp,
-                bottom = 8.dp
-            ),
-            // content spacing
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(items = recordList.filter { (it.pm2_5 ?: 0) <= threshold }) { item ->
-                LazyRowViewItem(
-                    siteId = item.sitedId ?: 0,
-                    siteName = item.siteName ?: "",
-                    county = item.county ?: "",
-                    pm2_5 = item.pm2_5 ?: 0,
-                    status = item.status ?: ""
-                )
-            }
-        }
+            text = stringResource(id = R.string.search_bar_title),
+            onClick = onSearchBarClick
+        )
         Divider(thickness = 2.dp, color = Color.Black)
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            items(items = recordList.filter { (it.pm2_5 ?: 0) > threshold }) { item ->
-                LazyColumnViewItem(
-                    siteId = item.sitedId ?: 0,
-                    siteName = item.siteName ?: "",
-                    county = item.county ?: "",
-                    pm2_5 = item.pm2_5 ?: 0,
-                    status = item.status ?: ""
-                )
-            }
+        HorizontalScrollableRecordList(
+            modifier = Modifier.fillMaxWidth(),
+            recordList = recordList,
+            condition = { (it.pm2_5 ?: 0) <= threshold }
+        )
+        Divider(thickness = 2.dp, color = Color.Black)
+        VerticalScrollableRecordList(
+            modifier = Modifier.fillMaxWidth(),
+            recordList = recordList,
+            condition = { (it.pm2_5 ?: 0) > threshold }
+        )
+    }
+}
+
+@Composable
+fun SearchHeader(
+    modifier: Modifier = Modifier,
+    text: String,
+    onClick: () -> Unit = {}
+) {
+    Row(modifier = modifier.padding(start = 16.dp, end = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Text(text = text, fontSize = 20.sp)
+        Spacer(modifier = Modifier.weight(1.0f))
+        IconButton(onClick = onClick) {
+            Icon(
+                Icons.Filled.Search,
+                contentDescription = "Search"
+            )
         }
     }
+}
 
+@Composable
+fun HorizontalScrollableRecordList(
+    modifier: Modifier = Modifier,
+    recordList: List<Record>,
+    condition: (Record) -> Boolean
+) {
+    LazyRow(
+        modifier = modifier,
+        contentPadding = PaddingValues(
+            start = 16.dp,
+            end = 12.dp,
+            top = 8.dp,
+            bottom = 8.dp
+        ),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(items = recordList.filter { condition(it) }) { item ->
+            LazyRowViewItem(
+                siteId = item.sitedId ?: 0,
+                siteName = item.siteName ?: "",
+                county = item.county ?: "",
+                pm2_5 = item.pm2_5 ?: 0,
+                status = item.status ?: ""
+            )
+        }
+    }
 }
 
 @Composable
@@ -114,6 +144,25 @@ fun LazyRowViewItem(
                 Text(text = county, fontSize = 12.sp)
                 Text(text = status, fontSize = 12.sp)
             }
+        }
+    }
+}
+
+@Composable
+fun VerticalScrollableRecordList(
+    modifier: Modifier = Modifier,
+    recordList: List<Record>,
+    condition: (Record) -> Boolean
+) {
+    LazyColumn(modifier = modifier) {
+        items(items = recordList.filter { condition(it) }) { item ->
+            LazyColumnViewItem(
+                siteId = item.sitedId ?: 0,
+                siteName = item.siteName ?: "",
+                county = item.county ?: "",
+                pm2_5 = item.pm2_5 ?: 0,
+                status = item.status ?: ""
+            )
         }
     }
 }
@@ -203,8 +252,8 @@ fun Modifier.maxWidth(
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun HomeScreenPreview() {
-//    HomeScreen(viewModel = HomeViewModel())
-//}
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    HomeScreen(viewModel = HomeViewModel())
+}

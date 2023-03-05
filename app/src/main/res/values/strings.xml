@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Assignment</string>
+    <string name="search_bar_title">空氣污染</string>
+    <string name="search_bar_hint">請輸入「站名」</string>
+    <string name="search_view_hint">輸入「站名」\n查詢該地區空屋資訊</string>
+    <string name="search_not_found_hint">找不到「%s」\n相關的空屋資訊</string>
     <string name="status_good">良好</string>
     <string name="have_fun">The status is good, we want to go out to have fun</string>
 </resources>
