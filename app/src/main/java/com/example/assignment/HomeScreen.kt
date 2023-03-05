@@ -1,5 +1,6 @@
 package com.example.assignment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -32,18 +33,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.assignment.data.api.model.MockData
 import kotlin.math.roundToInt
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
-//    val homeViewModel = viewModel(modelClass = HomeViewModel::class.java)
-//    val state by homeViewModel.state.collectAsState()
-    val threshold = 14
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel,
+) {
+    val recordList = viewModel.records.value
+    val threshold = 10
+
     Column(modifier = Modifier.fillMaxSize()) {
         Divider(thickness = 2.dp, color = Color.Black)
         LazyRow(
@@ -58,7 +61,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             // content spacing
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(items = MockData.recordList.filter { it.pm2_5!! <= threshold }) { item ->
+            items(items = recordList.filter { (it.pm2_5 ?: 0) <= threshold }) { item ->
                 LazyRowViewItem(
                     siteId = item.sitedId ?: 0,
                     siteName = item.siteName ?: "",
@@ -70,7 +73,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         }
         Divider(thickness = 2.dp, color = Color.Black)
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            items(items = MockData.recordList.filter { it.pm2_5!! > threshold }) { item ->
+            items(items = recordList.filter { (it.pm2_5 ?: 0) > threshold }) { item ->
                 LazyColumnViewItem(
                     siteId = item.sitedId ?: 0,
                     siteName = item.siteName ?: "",
@@ -97,7 +100,9 @@ fun LazyRowViewItem(
         border = BorderStroke(2.dp, Color.Black)
     ) {
         Column(
-            modifier = Modifier.defaultMinSize(minWidth = 60.dp).padding(vertical = 8.dp, horizontal = 12.dp),
+            modifier = Modifier
+                .defaultMinSize(minWidth = 60.dp)
+                .padding(vertical = 8.dp, horizontal = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -167,10 +172,15 @@ fun LazyColumnViewItem(
             Spacer(modifier = Modifier.width(16.dp))
         }
     }
-    Divider(modifier = Modifier.padding(end = 16.dp), startIndent = 16.dp, thickness = 1.dp, color = Color.Black)
+    Divider(
+        modifier = Modifier.padding(end = 16.dp),
+        startIndent = 16.dp,
+        thickness = 1.dp,
+        color = Color.Black
+    )
 }
 
-private fun showToast(context: Context){
+private fun showToast(context: Context) {
     Toast.makeText(context, "This is a Sample Toast", Toast.LENGTH_LONG).show()
 }
 
@@ -180,14 +190,21 @@ fun Modifier.maxWidth(
     val maxWidth = (constraints.maxWidth * fraction).roundToInt()
     val width = measurable.maxIntrinsicWidth(constraints.maxHeight).coerceAtMost(maxWidth)
 
-    val placeable = measurable.measure(Constraints(constraints.minWidth, width, constraints.minHeight, constraints.maxHeight))
+    val placeable = measurable.measure(
+        Constraints(
+            constraints.minWidth,
+            width,
+            constraints.minHeight,
+            constraints.maxHeight
+        )
+    )
     layout(width, placeable.height) {
         placeable.placeRelative(0, 0)
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun HomeScreenPreview() {
+//    HomeScreen(viewModel = HomeViewModel())
+//}
