@@ -18,9 +18,9 @@ class HomeViewModel : ViewModel() {
 
     var records: MutableState<List<Record>> = mutableStateOf(listOf())
     private var cacheRecords = listOf<Record>()
-    var isSearchStarting = true
-    var isSearching = mutableStateOf(false)
 
+    var isSearching = mutableStateOf(false)
+    private var isSearchStarting = true
     init {
         viewModelScope.launch {
             val retrofit = Retrofit.Builder()
@@ -54,6 +54,7 @@ class HomeViewModel : ViewModel() {
             val results = listToSearch.filter {
                 it.siteName?.contains(query.trim(), ignoreCase = true) == true
             }
+            // need to cache list
             if(isSearchStarting) {
                 cacheRecords = records.value
                 isSearchStarting = false

@@ -211,7 +211,8 @@ fun LazyColumnViewItem(
             )
         }
         if (status != stringResource(id = R.string.status_good)) {
-            IconButton(onClick = { showToast(mContext) }) {
+            val toastText = stringResource(id = R.string.toast)
+            IconButton(onClick = { showToast(mContext, toastText) }) {
                 Icon(
                     Icons.Filled.KeyboardArrowRight,
                     contentDescription = "Toast"
@@ -229,8 +230,8 @@ fun LazyColumnViewItem(
     )
 }
 
-private fun showToast(context: Context) {
-    Toast.makeText(context, "This is a Sample Toast", Toast.LENGTH_LONG).show()
+private fun showToast(context: Context, text: String) {
+    Toast.makeText(context, text, Toast.LENGTH_LONG).show()
 }
 
 fun Modifier.maxWidth(

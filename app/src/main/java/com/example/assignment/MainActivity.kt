@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
                     composable(NavPath.Search.name){
                         SearchScreen(
                             viewModel = viewModel,
-                            onBackClick = { navController.popBackStack() }
+                            onBackButtonClick = { navController.popBackStack() }
                         )
                     }
                 }
