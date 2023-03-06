@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 fun SearchScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel,
-    onBackClick: () -> Unit = {},
+    onBackButtonClick: () -> Unit = {},
 ) {
     var textInput by remember { mutableStateOf("") }
     val isSearching by remember { viewModel.isSearching }
@@ -37,19 +37,17 @@ fun SearchScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         SearchBar(
+            modifier = Modifier.fillMaxWidth(),
             input = textInput,
             onInputChange = { textInput = it },
-            modifier = Modifier.fillMaxWidth(),
             hint = stringResource(id = R.string.search_bar_hint),
-            onBackClick = onBackClick
-        ) {
-            viewModel.searchByRegion(it)
-        }
+            onBackClick = onBackButtonClick,
+            onSearch = { viewModel.searchByRegion(it) }
+        )
         Divider(thickness = 2.dp, color = Color.Black)
         if (!isSearching) {
             BoxView(text = stringResource(id = R.string.search_view_hint))
         } else {
-            // if not found
             if(recordList.isEmpty()) {
                 BoxView(text = stringResource(id = R.string.search_not_found_hint, textInput))
             } else {
