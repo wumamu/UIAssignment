@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -36,7 +37,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,15 +60,14 @@ fun HomeScreen(
         }
 
         if (!viewModel.isLoading.value) {
-            Column(
+            Box(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator()
             }
         }
-        if (viewModel.isLoading.value && viewModel.records.value.isNotEmpty()){
+        if (viewModel.isLoading.value && viewModel.records.value.isNotEmpty()) {
             SearchHeader(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.search_bar_title),
@@ -96,7 +95,10 @@ fun SearchHeader(
     text: String,
     onClick: () -> Unit = {}
 ) {
-    Row(modifier = modifier.padding(start = 16.dp, end = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = modifier.padding(start = 16.dp, end = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(text = text, fontSize = 20.sp)
         Spacer(modifier = Modifier.weight(1.0f))
         IconButton(onClick = onClick) {
@@ -272,8 +274,8 @@ fun Modifier.maxWidth(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen(viewModel = HomeViewModel())
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun HomeScreenPreview() {
+//    HomeScreen(viewModel = HomeViewModel())
+//}
