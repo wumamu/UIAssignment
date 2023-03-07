@@ -16,12 +16,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class HomeViewModel : ViewModel() {
 
+    var isLoading = mutableStateOf(false)
+
     var records: MutableState<List<Record>> = mutableStateOf(listOf())
     private var cacheRecords = listOf<Record>()
 
     var isSearching = mutableStateOf(false)
     private var isSearchStarting = true
-    init {
+
+    suspend fun getAllData() {
         viewModelScope.launch {
             val retrofit = Retrofit.Builder()
                 .baseUrl(ApiConstant.BASE_URL)
@@ -29,10 +32,13 @@ class HomeViewModel : ViewModel() {
                 .build()
                 .create(ApiService::class.java)
             CoroutineScope(Dispatchers.IO).launch {
-                val response = retrofit.getRecords(apiKey = ApiConstant.API_TOKEN)
-                val converter = RecordDtoMapper()
-                records.value = converter.toDomainList(response.records)
-                cacheRecords = records.value
+                val response = retrofit.getRecords()
+                if (response.isSuccessful) {
+                    isLoading.value = true
+                    val converter = RecordDtoMapper()
+                    records.value = converter.toDomainList(response.body()!!.records)
+                    cacheRecords = records.value
+                }
             }
         }
     }

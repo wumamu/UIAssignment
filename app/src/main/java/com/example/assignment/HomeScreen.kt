@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.assignment.data.domain.model.Record
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
@@ -48,26 +51,42 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     onSearchBarClick: () -> Unit = {}
 ) {
-    val recordList = viewModel.records.value
+    val scope = rememberCoroutineScope()
     val threshold = 10
+
     Column(modifier = Modifier.fillMaxSize()) {
-        SearchHeader(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.search_bar_title),
-            onClick = onSearchBarClick
-        )
-        Divider(thickness = 2.dp, color = Color.Black)
-        HorizontalScrollableRecordList(
-            modifier = Modifier.fillMaxWidth(),
-            recordList = recordList,
-            condition = { (it.pm2_5 ?: 0) <= threshold }
-        )
-        Divider(thickness = 2.dp, color = Color.Black)
-        VerticalScrollableRecordList(
-            modifier = Modifier.fillMaxWidth(),
-            recordList = recordList,
-            condition = { (it.pm2_5 ?: 0) > threshold }
-        )
+        scope.launch {
+            viewModel.getAllData()
+        }
+
+        if (!viewModel.isLoading.value) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        if (viewModel.isLoading.value && viewModel.records.value.isNotEmpty()){
+            SearchHeader(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.search_bar_title),
+                onClick = onSearchBarClick
+            )
+            Divider(thickness = 2.dp, color = Color.Black)
+            HorizontalScrollableRecordList(
+                modifier = Modifier.fillMaxWidth(),
+                recordList = viewModel.records.value,
+                condition = { (it.pm2_5 ?: 0) <= threshold }
+            )
+            Divider(thickness = 2.dp, color = Color.Black)
+            VerticalScrollableRecordList(
+                modifier = Modifier.fillMaxWidth(),
+                recordList = viewModel.records.value,
+                condition = { (it.pm2_5 ?: 0) > threshold }
+            )
+        }
     }
 }
 
