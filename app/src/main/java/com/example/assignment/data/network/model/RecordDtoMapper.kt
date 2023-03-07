@@ -2,8 +2,11 @@ package com.example.assignment.data.network.model
 
 import com.example.assignment.data.domain.model.Record
 import com.example.assignment.data.domain.util.DomainMapper
+import javax.inject.Inject
 
-class RecordDtoMapper : DomainMapper<RecordDto, Record> {
+class RecordDtoMapper
+@Inject
+constructor() : DomainMapper<RecordDto, Record> {
     override fun mapToDomainModel(model: RecordDto): Record {
         return Record(
             siteName = model.siteName,
