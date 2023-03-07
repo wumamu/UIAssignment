@@ -8,8 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.assignment.ui.theme.AssignmentTheme
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: HomeViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,13 +20,13 @@ class MainActivity : ComponentActivity() {
             AssignmentTheme {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = NavPath.Main.name) {
-                    composable(NavPath.Main.name){
+                    composable(NavPath.Main.name) {
                         HomeScreen(
                             viewModel = viewModel,
                             onSearchBarClick = { navController.navigate(NavPath.Search.name) }
                         )
                     }
-                    composable(NavPath.Search.name){
+                    composable(NavPath.Search.name) {
                         SearchScreen(
                             viewModel = viewModel,
                             onBackButtonClick = { navController.popBackStack() }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -26,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,12 +37,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.assignment.data.domain.model.Record
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
@@ -48,26 +51,41 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     onSearchBarClick: () -> Unit = {}
 ) {
-    val recordList = viewModel.records.value
+    val scope = rememberCoroutineScope()
     val threshold = 10
+
     Column(modifier = Modifier.fillMaxSize()) {
-        SearchHeader(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.search_bar_title),
-            onClick = onSearchBarClick
-        )
-        Divider(thickness = 2.dp, color = Color.Black)
-        HorizontalScrollableRecordList(
-            modifier = Modifier.fillMaxWidth(),
-            recordList = recordList,
-            condition = { (it.pm2_5 ?: 0) <= threshold }
-        )
-        Divider(thickness = 2.dp, color = Color.Black)
-        VerticalScrollableRecordList(
-            modifier = Modifier.fillMaxWidth(),
-            recordList = recordList,
-            condition = { (it.pm2_5 ?: 0) > threshold }
-        )
+        scope.launch {
+            viewModel.getAllData()
+        }
+
+        if (!viewModel.isLoading.value) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        if (viewModel.isLoading.value && viewModel.records.value.isNotEmpty()) {
+            SearchHeader(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.search_bar_title),
+                onClick = onSearchBarClick
+            )
+            Divider(thickness = 2.dp, color = Color.Black)
+            HorizontalScrollableRecordList(
+                modifier = Modifier.fillMaxWidth(),
+                recordList = viewModel.records.value,
+                condition = { (it.pm2_5 ?: 0) <= threshold }
+            )
+            Divider(thickness = 2.dp, color = Color.Black)
+            VerticalScrollableRecordList(
+                modifier = Modifier.fillMaxWidth(),
+                recordList = viewModel.records.value,
+                condition = { (it.pm2_5 ?: 0) > threshold }
+            )
+        }
     }
 }
 
@@ -77,7 +95,10 @@ fun SearchHeader(
     text: String,
     onClick: () -> Unit = {}
 ) {
-    Row(modifier = modifier.padding(start = 16.dp, end = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = modifier.padding(start = 16.dp, end = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(text = text, fontSize = 20.sp)
         Spacer(modifier = Modifier.weight(1.0f))
         IconButton(onClick = onClick) {
@@ -253,8 +274,8 @@ fun Modifier.maxWidth(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen(viewModel = HomeViewModel())
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun HomeScreenPreview() {
+//    HomeScreen(viewModel = HomeViewModel())
+//}
