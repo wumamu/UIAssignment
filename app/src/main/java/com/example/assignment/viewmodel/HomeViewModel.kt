@@ -1,4 +1,4 @@
-package com.example.assignment
+package com.example.assignment.viewmodel
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -16,7 +16,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 
 class HomeViewModel @Inject constructor(
-    private val recordRepository: RecordRepository
+    private val recordRepository: RecordRepository,
+    private val recordDtoMapper: RecordDtoMapper
 ) : ViewModel() {
 
     var isLoading = mutableStateOf(false)
@@ -31,8 +32,8 @@ class HomeViewModel @Inject constructor(
         val response = recordRepository.getRecordResponse()
         if (response is Resource.Success) {
             isLoading.value = true
-            val converter = RecordDtoMapper()
-            records.value = converter.toDomainList(response.data?.body()!!.records)
+//            val converter = RecordDtoMapper()
+            records.value = recordDtoMapper.toDomainList(response.data?.body()!!.records)
             cacheRecords = records.value
         }
     }
